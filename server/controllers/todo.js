@@ -27,9 +27,13 @@ export const getTodo = async (req, res) => {
 //delete
 export const deleteTodo = async (req, res) => {
   try {
-    const { _id } = req.body;
-    await todoModel.findByIdAndDelete(_id);
-    res.status(201).send("deleted successfully");
+    const id = req.params.id;
+    // console.log(id);
+    const data = await todoModel.findByIdAndDelete(id);
+    res.status(201).send({
+      data,
+      message: "TODO deleted",
+    });
   } catch (err) {
     console.log(err);
     res.status(500).send(" internal error");
@@ -44,6 +48,19 @@ export const updateToDo = async (req, res) => {
     await todoModel.findByIdAndUpdate(_id, { text });
     res.status(201).send("Updated Successfully.");
   } catch (err) {
+    console.log(err);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+//Done todo
+export const doneTodo = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    await todoModel.findByIdAndUpdate({ _id: id }, { done: true });
+    res.status(201).send("completed Todo.");
+  } catch (error) {
     console.log(err);
     res.status(500).send("Internal Server Error");
   }
